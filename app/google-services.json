@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "62269370566",
+    "project_id": "eyesonthetabletop",
+    "storage_bucket": "eyesonthetabletop.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:62269370566:android:848a61ad6183aa9ecaa7c7",
+        "android_client_info": {
+          "package_name": "com.example.eyesonthetableyop"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNxQuhvclrOO1C3Y0gGEr8HBrGsRk6_ws"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
