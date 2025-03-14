@@ -1,4 +1,4 @@
-package com.example.eyesonthetableyop.Models
+package com.example.eyesonthetableyop.models
 
 import androidx.compose.runtime.Immutable
 
