@@ -1,8 +1,8 @@
-package com.example.eyesonthetableyop.Repos
+package com.example.eyesonthetableyop.repos
 
-import com.example.eyesonthetableyop.Models.User
+import com.example.eyesonthetableyop.models.User
 
-class PostRepo {
+class UserRepo_Test {
 
     fun getAllPosts():List<User>{
         return listOf(
