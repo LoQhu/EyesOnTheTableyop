@@ -1,7 +1,6 @@
-package com.example.eyesonthetableyop
+package com.example.eyesonthetableyop.screens
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,9 +12,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 
@@ -28,21 +26,26 @@ import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import com.example.eyesonthetableyop.Repos.PostRepo
-import com.example.eyesonthetableyop.fragments.Posts
-import com.google.accompanist.systemuicontroller.SystemUiController
+import com.example.eyesonthetableyop.R
+import com.example.eyesonthetableyop.repos.PostRepo_Test
+import com.example.eyesonthetableyop.repos.UserRepo_Test
+import com.example.eyesonthetableyop.fragments.Post
+import com.example.eyesonthetableyop.fragments.Posts_ForTesting
 
 @Composable
 fun HomeScrollScreen(modifier: Modifier=Modifier){
-    val postsRepo = PostRepo()
-    val posts = postsRepo.getAllPosts()
+    val postsRepo_fortest = UserRepo_Test()
+    val posts_fortest = postsRepo_fortest.getAllPosts()
+
+    val postRepo = PostRepo_Test()
+    val posts = postRepo.getAllPosts()
+
     Surface(modifier = Modifier
         .fillMaxSize()
         .padding(0.dp,20.dp),
@@ -50,7 +53,9 @@ fun HomeScrollScreen(modifier: Modifier=Modifier){
 
         Column {
             AppBar()
-            Posts(posts)
+            Posts_ForTesting(posts_fortest)
+            HorizontalDivider()
+            Post(posts = posts)
         }
 
 
@@ -63,7 +68,7 @@ fun AppBar(modifier: Modifier = Modifier){
     Row (modifier = Modifier.fillMaxWidth()
         .height(35.dp)
         .padding(5.dp)){
-        Image(painter = painterResource(id=R.drawable.eyeofsauron),
+        Image(painter = painterResource(id= R.drawable.eyeofsauron),
             contentDescription = null,
             alignment = Alignment.TopStart,
             modifier = Modifier.size(32.dp))
@@ -76,13 +81,7 @@ fun AppBar(modifier: Modifier = Modifier){
 
         Row(modifier = Modifier.fillMaxWidth()
             .wrapContentSize(align = Alignment.TopEnd)) {
-            Image(painter = rememberAsyncImagePainter(
-                ImageRequest.Builder(context)
-                    .crossfade(true)
-                    .data("https://img.icons8.com/?size=100&id=37784&format=png&color=000000")
-                    .build(),
-                filterQuality = FilterQuality.High
-            ),
+            Image(painter = painterResource(R.drawable.plus_icon),
                 contentDescription = null,
                 contentScale = ContentScale.Fit,
                 modifier = modifier
@@ -91,13 +90,7 @@ fun AppBar(modifier: Modifier = Modifier){
                     .clip(shape = CircleShape)
             )
             Spacer(Modifier.width(12.dp))
-            Image(painter = rememberAsyncImagePainter(
-                ImageRequest.Builder(context)
-                    .crossfade(true)
-                    .data("https://img.icons8.com/?size=100&id=7877&format=png&color=000000")
-                    .build(),
-                filterQuality = FilterQuality.High
-            ),
+            Image(painter = painterResource(R.drawable.eye_icon),
                 contentDescription = null,
                 contentScale = ContentScale.Fit,
                 modifier = modifier
