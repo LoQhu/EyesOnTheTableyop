@@ -26,8 +26,8 @@ class MainActivity : ComponentActivity() {
                         color = Color.Red
                     )
                 }
-                //HomeScrollScreen()
-                NewPostScreen()
+                HomeScrollScreen()
+                //NewPostScreen()
             }
         }
     }

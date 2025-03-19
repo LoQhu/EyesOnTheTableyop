@@ -3,6 +3,7 @@ package com.example.eyesonthetableyop.screens
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -96,16 +97,19 @@ fun NewPostScreen(){
                             .wrapContentWidth()
                             .align(alignment = Alignment.CenterVertically)
                             .clickable {
-                                if(imgUri != null){
-                                    uploadImageToFirebase(imgUri,
+                                if (imgUri != null) {
+                                    uploadImageToFirebase(
+                                        imgUri,
                                         context = context
-                                    ){
-                                        downloadUrl ->
-                                        Toast.makeText(
-                                            context,
-                                            downloadUrl,
-                                            Toast.LENGTH_SHORT
-                                        ).show()
+                                    ) { downloadUrl ->
+                                        Toast
+                                            .makeText(
+                                                context,
+                                                downloadUrl,
+                                                Toast.LENGTH_SHORT
+                                            )
+                                            .show()
+                                        Log.d("NewPostScreen", "Image URL: $downloadUrl")
                                     }
                                 }
                             }
@@ -115,17 +119,21 @@ fun NewPostScreen(){
 
             Row(modifier = Modifier.fillMaxWidth()
             ){
-                AsyncImage(
-                    model = imgUri,
-                    contentDescription = null,
-                    modifier = Modifier.size(200.dp),
-                    contentScale = ContentScale.Crop,
-                )
-//                Image(
-//                    painter = painterResource(R.drawable.icons8_no_image_100),
-//                modifier = Modifier
-//                    .size(200.dp)
-//                , contentDescription = null)
+                if(imgUri != null){
+                    AsyncImage(
+                        model = imgUri,
+                        contentDescription = null,
+                        modifier = Modifier.size(200.dp),
+                        contentScale = ContentScale.Crop,
+                    )
+                }else{
+                    Image(
+                        painter = painterResource(R.drawable.icons8_no_image_100),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(200.dp)
+                    )
+                }
                 Button(
                         onClick = { singleImagePickerLauncher.launch(
                             PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
@@ -183,14 +191,23 @@ fun uploadImageToFirebase(uri: Uri?, context:Context, onComplete:(String) -> Uni
     uploadTask.addOnSuccessListener {
         Toast.makeText(
             context,
-            "image uploaded",
+            "Image uploaded",
             Toast.LENGTH_SHORT
         ).show()
-    }.addOnFailureListener(){
+        imageReference.downloadUrl.addOnSuccessListener { downloadUri ->
+            onComplete(downloadUri.toString())
+        }.addOnFailureListener{
+            Toast.makeText(
+                context,
+                "Error in getting image URL",
+                Toast.LENGTH_SHORT,
+            ).show()
+        }
+    }.addOnFailureListener{
         Toast.makeText(
             context,
-            "image upload failed",
-            Toast.LENGTH_SHORT
+            "Image upload failed, try again",
+            Toast.LENGTH_SHORT,
         ).show()
     }
 }

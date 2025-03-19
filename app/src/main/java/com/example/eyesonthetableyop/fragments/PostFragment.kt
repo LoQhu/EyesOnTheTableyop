@@ -32,12 +32,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import com.example.eyesonthetableyop.models.Post
+import com.example.eyesonthetableyop.models.postmodels.PostModel
 import com.example.eyesonthetableyop.repos.PostRepo_Test
 
 
 @Composable
-fun Post(posts: List<Post>){
+fun Post(posts: List<PostModel>){
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -57,7 +57,7 @@ fun Post(posts: List<Post>){
 }
 
 @Composable
-fun PostItem(post:Post){
+fun PostItem(post: PostModel){
     val context = LocalContext.current
     val commentCount = post.getCommentCount()
 

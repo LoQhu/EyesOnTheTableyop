@@ -12,12 +12,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,6 +34,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.eyesonthetableyop.R
@@ -37,9 +42,11 @@ import com.example.eyesonthetableyop.repos.PostRepo_Test
 import com.example.eyesonthetableyop.repos.UserRepo_Test
 import com.example.eyesonthetableyop.fragments.Post
 import com.example.eyesonthetableyop.fragments.Posts_ForTesting
+import com.example.eyesonthetableyop.viewmodels.HomeScrollScreenViewModel
 
 @Composable
-fun HomeScrollScreen(modifier: Modifier=Modifier){
+fun HomeScrollScreen(modifier: Modifier=Modifier, viewModel: HomeScrollScreenViewModel = HomeScrollScreenViewModel()){
+    val imgUrls by viewModel.imgURLs.collectAsState()
     val postsRepo_fortest = UserRepo_Test()
     val posts_fortest = postsRepo_fortest.getAllPosts()
 
@@ -53,9 +60,28 @@ fun HomeScrollScreen(modifier: Modifier=Modifier){
 
         Column {
             AppBar()
-            Posts_ForTesting(posts_fortest)
+           Posts_ForTesting(posts_fortest)
             HorizontalDivider()
-            Post(posts = posts)
+//            Post(posts = posts)
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+            ) {
+                Text(text = "Images from Firebase Storage")
+                LazyColumn {
+                    items(imgUrls){imgUrl ->
+                        AsyncImage(
+                            model = imgUrl,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp)
+                        )
+                    }
+                }
+            }
         }
 
 

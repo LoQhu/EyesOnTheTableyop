@@ -26,10 +26,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import com.example.eyesonthetableyop.models.User
+import com.example.eyesonthetableyop.models.usermodels.UserModel
 
 @Composable
-fun PostRowItem(userPost:User){
+fun PostRowItem(userPost: UserModel){
     val context = LocalContext.current
     Card(
         modifier = Modifier.size(width = 80.dp, height = 100.dp)
@@ -66,7 +66,7 @@ fun PostRowItem(userPost:User){
 
 @Composable
 fun Posts_ForTesting(
-    postList:List<User>,
+    postList:List<UserModel>,
     modifier: Modifier = Modifier
 ){
     Column(
