@@ -1,6 +1,9 @@
 package com.example.eyesonthetableyop.screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -37,14 +41,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.Navigation.findNavController
-import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
+import coil3.compose.AsyncImage
 import com.example.eyesonthetableyop.MainActivity
 import com.example.eyesonthetableyop.R
-import com.example.eyesonthetableyop.repos.PostRepo_Test
+//import com.example.eyesonthetableyop.repos.PostRepo_Test
 import com.example.eyesonthetableyop.repos.UserRepo_Test
-import com.example.eyesonthetableyop.fragments.Post
+//import com.example.eyesonthetableyop.fragments.Post
 import com.example.eyesonthetableyop.fragments.Posts_ForTesting
 import com.example.eyesonthetableyop.viewmodels.HomeScrollScreenViewModel
 
@@ -56,24 +58,25 @@ fun HomeScrollScreen(modifier: Modifier=Modifier,
 
 ){
     val imgUrls by viewModel.imgURLs.collectAsState()
+    val posts by viewModel.posts.collectAsState()
     val postsRepo_fortest = UserRepo_Test()
     val posts_fortest = postsRepo_fortest.getAllPosts()
 
-    val postRepo = PostRepo_Test()
-    val posts = postRepo.getAllPosts()
+//    val postRepo = PostRepo_Test()
+//    val posts = postRepo.getAllPosts()
 
     Surface(modifier = Modifier
         .fillMaxSize()
-        .padding(0.dp,20.dp),
+        .padding(0.dp, 20.dp),
         color = Color.Gray){
 
         Column {
             AppBar(
                 onNewPostClick = { onNewPostClick() }
             )
-           Posts_ForTesting(posts_fortest)
+           //Posts_ForTesting(posts_fortest)
             HorizontalDivider()
-//            Post(posts = posts)
+            //Post(posts = posts)
 
             Column(
                 modifier = Modifier
@@ -82,14 +85,58 @@ fun HomeScrollScreen(modifier: Modifier=Modifier,
             ) {
                 Text(text = "Images from Firebase Storage")
                 LazyColumn {
-                    items(imgUrls){imgUrl ->
-                        AsyncImage(
-                            model = imgUrl,
-                            contentDescription = null,
+                    items(posts){post ->
+                        Log.d("HomeScrollScreen", "Image URL: ${post.imgURL}")
+                        Column(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp)
-                        )
+                                .wrapContentWidth()
+                                .border(2.dp, Color.Black, shape = RectangleShape)
+                                .padding(start = 5.dp, end = 5.dp),
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = post.postOwner,
+                                    modifier = Modifier.padding(end = 8.dp)
+                                )
+                            }
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                AsyncImage(
+                                    model = post.imgURL,
+                                    placeholder = painterResource(id = R.drawable.icons8_no_image_100),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp),
+                                    contentScale = ContentScale.Crop,
+                                )
+                            }
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = post.title,
+                                    modifier = Modifier.padding(end = 8.dp)
+                                        .background(Color.White)
+                                )
+                            }
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = post.description,
+                                    modifier = Modifier.padding(end = 8.dp)
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
             }
@@ -103,7 +150,8 @@ fun HomeScrollScreen(modifier: Modifier=Modifier,
 fun AppBar(modifier: Modifier = Modifier,
            onNewPostClick: () -> Unit){
     val context = LocalContext.current
-    Row (modifier = Modifier.fillMaxWidth()
+    Row (modifier = Modifier
+        .fillMaxWidth()
         .height(35.dp)
         .padding(5.dp)){
         Image(painter = painterResource(id= R.drawable.eyeofsauron),
@@ -117,7 +165,8 @@ fun AppBar(modifier: Modifier = Modifier,
             fontSize = 25.sp
         )
 
-        Row(modifier = Modifier.fillMaxWidth()
+        Row(modifier = Modifier
+            .fillMaxWidth()
             .wrapContentSize(align = Alignment.TopEnd)) {
             Image(painter = painterResource(R.drawable.plus_icon),
                 contentDescription = "Add new post",

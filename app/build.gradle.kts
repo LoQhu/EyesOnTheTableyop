@@ -69,5 +69,6 @@ dependencies {
     implementation("com.google.firebase:firebase-storage-ktx:21.0.1")
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.24.1-alpha")
 
-    implementation("io.coil-kt:coil-compose:2.0.0-alpha05")
+    implementation("io.coil-kt.coil3:coil-compose:3.1.0")
+    implementation("io.coil-kt.coil3:coil-network-okhttp:3.1.0")
 }

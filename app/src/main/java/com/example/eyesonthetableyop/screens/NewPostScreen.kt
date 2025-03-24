@@ -41,8 +41,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import com.example.eyesonthetableyop.R
+import com.example.eyesonthetableyop.models.postmodels.NewPostModel
+import com.example.eyesonthetableyop.models.postmodels.PostModel
+import com.example.eyesonthetableyop.tools.AppSettings
+import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 
 @Composable
@@ -58,6 +64,7 @@ fun NewPostScreen(navController: NavHostController) {
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = {uri -> imgUri = uri}
     )
+    val appSettings = AppSettings()
 
     Surface(
         color = Color.Gray,
@@ -95,6 +102,12 @@ fun NewPostScreen(navController: NavHostController) {
                             .clickable {
                                 if (imgUri != null) {
                                     uploadImageToFirebase(
+                                        NewPostModel(
+                                            title = title.value,
+                                            description = description.value,
+                                            imgURL = null,
+                                            postOwner = "TestUser",
+                                        ),
                                         imgUri,
                                         context = context
                                     ) { downloadUrl ->
@@ -177,20 +190,26 @@ fun validatePost():Boolean{
     return true
 }
 
-fun uploadImageToFirebase(uri: Uri?, context:Context, onComplete:(String) -> Unit ){
+fun uploadImageToFirebase(newPost:NewPostModel,uri: Uri?, context:Context, onComplete:(String) -> Unit ){
     val storage = FirebaseStorage.getInstance()
     val storageReference = storage.reference
     val imageReference = storageReference.child("images/${uri!!.lastPathSegment}")
 
-    val uploadTask = uri.let { imageReference.putFile(it)}
+    val uploadTask = uri?.let { imageReference.putFile(it)}
 
-    uploadTask.addOnSuccessListener {
+    uploadTask?.addOnSuccessListener {
         Toast.makeText(
             context,
             "Image uploaded",
             Toast.LENGTH_SHORT
         ).show()
         imageReference.downloadUrl.addOnSuccessListener { downloadUri ->
+            savePostToFirestore(NewPostModel(
+                title = newPost.title,
+                description = newPost.description,
+                imgURL = downloadUri.toString(),
+                postOwner = newPost.postOwner,
+            ),downloadUri.toString(),context)
             onComplete(downloadUri.toString())
         }.addOnFailureListener{
             Toast.makeText(
@@ -199,7 +218,7 @@ fun uploadImageToFirebase(uri: Uri?, context:Context, onComplete:(String) -> Uni
                 Toast.LENGTH_SHORT,
             ).show()
         }
-    }.addOnFailureListener{
+    }?.addOnFailureListener{
         Toast.makeText(
             context,
             "Image upload failed, try again",
@@ -208,7 +227,32 @@ fun uploadImageToFirebase(uri: Uri?, context:Context, onComplete:(String) -> Uni
     }
 }
 
-
+fun savePostToFirestore(newPost:NewPostModel,imageUrl:String, context:Context){
+    val db = Firebase.firestore
+    val postData = hashMapOf(
+        "description" to newPost.description,
+        "imgURL" to imageUrl,
+        "title" to newPost.title,
+        "postOwner" to newPost.postOwner,
+    )
+    db.collection("posts")
+        .add(postData)
+        .addOnSuccessListener {
+            Toast.makeText(
+                context,
+                "Post saved",
+                Toast.LENGTH_SHORT,
+            ).show()
+        }
+        .addOnFailureListener {e->
+            Toast.makeText(
+                context,
+                "Error saving post: $e",
+                Toast.LENGTH_LONG
+            ).show()
+            Log.e("NewPostScreen", "Error saving post: $e")
+        }
+}
 @Preview
 @Composable
 fun NewPostScreenPreview(){
