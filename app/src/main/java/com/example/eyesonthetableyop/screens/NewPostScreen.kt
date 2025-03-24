@@ -44,9 +44,7 @@ import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import com.example.eyesonthetableyop.R
 import com.example.eyesonthetableyop.models.postmodels.NewPostModel
-import com.example.eyesonthetableyop.models.postmodels.PostModel
 import com.example.eyesonthetableyop.tools.AppSettings
-import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
@@ -100,7 +98,7 @@ fun NewPostScreen(navController: NavHostController) {
                             .wrapContentWidth()
                             .align(alignment = Alignment.CenterVertically)
                             .clickable {
-                                if (imgUri != null) {
+                                if (validatePost(imgUri, title.value, description.value, context)) {
                                     uploadImageToFirebase(
                                         NewPostModel(
                                             title = title.value,
@@ -186,7 +184,31 @@ fun openFileChooser(){
     Intent.createChooser(intent, "Choose an image to upload")
 }
 
-fun validatePost():Boolean{
+fun validatePost(imgUri: Uri?, title: String, desc: String, context: Context):Boolean{
+    if(imgUri == null){
+        Toast.makeText(
+            context,
+            "Please select an image",
+            Toast.LENGTH_SHORT
+        ).show()
+        return false
+    }
+    if(title.isEmpty()){
+        Toast.makeText(
+            context,
+            "Please enter a title",
+            Toast.LENGTH_SHORT
+        ).show()
+        return false
+        }
+    if(desc.isEmpty()){
+        Toast.makeText(
+            context,
+            "Please enter a description",
+            Toast.LENGTH_SHORT
+        ).show()
+        return false
+    }
     return true
 }
 
