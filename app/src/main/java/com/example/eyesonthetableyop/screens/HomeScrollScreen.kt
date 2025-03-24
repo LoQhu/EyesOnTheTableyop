@@ -40,14 +40,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.Navigation.findNavController
 import coil3.compose.AsyncImage
-import com.example.eyesonthetableyop.MainActivity
 import com.example.eyesonthetableyop.R
-//import com.example.eyesonthetableyop.repos.PostRepo_Test
-import com.example.eyesonthetableyop.repos.UserRepo_Test
-//import com.example.eyesonthetableyop.fragments.Post
-import com.example.eyesonthetableyop.fragments.Posts_ForTesting
 import com.example.eyesonthetableyop.viewmodels.HomeScrollScreenViewModel
 
 @Composable
@@ -59,11 +53,6 @@ fun HomeScrollScreen(modifier: Modifier=Modifier,
 ){
     val imgUrls by viewModel.imgURLs.collectAsState()
     val posts by viewModel.posts.collectAsState()
-    val postsRepo_fortest = UserRepo_Test()
-    val posts_fortest = postsRepo_fortest.getAllPosts()
-
-//    val postRepo = PostRepo_Test()
-//    val posts = postRepo.getAllPosts()
 
     Surface(modifier = Modifier
         .fillMaxSize()
@@ -74,9 +63,7 @@ fun HomeScrollScreen(modifier: Modifier=Modifier,
             AppBar(
                 onNewPostClick = { onNewPostClick() }
             )
-           //Posts_ForTesting(posts_fortest)
             HorizontalDivider()
-            //Post(posts = posts)
 
             Column(
                 modifier = Modifier
