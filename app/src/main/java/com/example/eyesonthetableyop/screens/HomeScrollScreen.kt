@@ -1,6 +1,7 @@
 package com.example.eyesonthetableyop.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -34,9 +35,12 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.Navigation.findNavController
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import com.example.eyesonthetableyop.MainActivity
 import com.example.eyesonthetableyop.R
 import com.example.eyesonthetableyop.repos.PostRepo_Test
 import com.example.eyesonthetableyop.repos.UserRepo_Test
@@ -45,7 +49,12 @@ import com.example.eyesonthetableyop.fragments.Posts_ForTesting
 import com.example.eyesonthetableyop.viewmodels.HomeScrollScreenViewModel
 
 @Composable
-fun HomeScrollScreen(modifier: Modifier=Modifier, viewModel: HomeScrollScreenViewModel = HomeScrollScreenViewModel()){
+fun HomeScrollScreen(modifier: Modifier=Modifier,
+                     viewModel: HomeScrollScreenViewModel = HomeScrollScreenViewModel(),
+                     navController: NavController,
+                     onNewPostClick: () -> Unit = {},
+
+){
     val imgUrls by viewModel.imgURLs.collectAsState()
     val postsRepo_fortest = UserRepo_Test()
     val posts_fortest = postsRepo_fortest.getAllPosts()
@@ -59,7 +68,9 @@ fun HomeScrollScreen(modifier: Modifier=Modifier, viewModel: HomeScrollScreenVie
         color = Color.Gray){
 
         Column {
-            AppBar()
+            AppBar(
+                onNewPostClick = { onNewPostClick() }
+            )
            Posts_ForTesting(posts_fortest)
             HorizontalDivider()
 //            Post(posts = posts)
@@ -89,7 +100,8 @@ fun HomeScrollScreen(modifier: Modifier=Modifier, viewModel: HomeScrollScreenVie
 
 }
 @Composable
-fun AppBar(modifier: Modifier = Modifier){
+fun AppBar(modifier: Modifier = Modifier,
+           onNewPostClick: () -> Unit){
     val context = LocalContext.current
     Row (modifier = Modifier.fillMaxWidth()
         .height(35.dp)
@@ -108,12 +120,13 @@ fun AppBar(modifier: Modifier = Modifier){
         Row(modifier = Modifier.fillMaxWidth()
             .wrapContentSize(align = Alignment.TopEnd)) {
             Image(painter = painterResource(R.drawable.plus_icon),
-                contentDescription = null,
+                contentDescription = "Add new post",
                 contentScale = ContentScale.Fit,
                 modifier = modifier
                     .wrapContentWidth()
                     .size(32.dp)
                     .clip(shape = CircleShape)
+                    .clickable { onNewPostClick() }
             )
             Spacer(Modifier.width(12.dp))
             Image(painter = painterResource(R.drawable.eye_icon),
@@ -130,5 +143,5 @@ fun AppBar(modifier: Modifier = Modifier){
 @Preview(showBackground = true)
 @Composable
 fun MainScrollScreenPreview(){
-    HomeScrollScreen()
+    HomeScrollScreen(navController = NavController(LocalContext.current))
 }

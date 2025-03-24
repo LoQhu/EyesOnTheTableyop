@@ -7,7 +7,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -20,13 +19,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Button
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Snackbar
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -45,13 +40,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.eyesonthetableyop.R
 import com.google.firebase.storage.FirebaseStorage
-import kotlinx.coroutines.launch
 
 @Composable
-fun NewPostScreen(){
+fun NewPostScreen(navController: NavHostController) {
     var context = LocalContext.current
     var title:MutableState<String> = remember { mutableStateOf("") }
     var description:MutableState<String> = remember { mutableStateOf("") }
@@ -78,11 +73,12 @@ fun NewPostScreen(){
                     .padding(5.dp)
             ){
                 Image(painter = painterResource(R.drawable.icons8_back_button_50),
-                    contentDescription = null,
+                    contentDescription = "Back button",
                     modifier = Modifier
                         .size(32.dp)
                         .wrapContentWidth()
                         .align(alignment = Alignment.CenterVertically)
+                        .clickable { navController.navigateUp() }
                 )
                 Spacer(Modifier.width(25.dp))
                 Text(text = "New post", fontSize = 20.sp, color = Color.White)
@@ -216,5 +212,5 @@ fun uploadImageToFirebase(uri: Uri?, context:Context, onComplete:(String) -> Uni
 @Preview
 @Composable
 fun NewPostScreenPreview(){
-    NewPostScreen()
+    NewPostScreen(navController = NavHostController(LocalContext.current))
 }
